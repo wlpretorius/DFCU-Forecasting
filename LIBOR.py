@@ -118,8 +118,8 @@ if page == "LIBOR":
     #     st.markdown(href, unsafe_allow_html=True)
 
 if page == "About":
-    icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
-    image = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
+    icon = Image.open("RWx & Slogan.png")
+    image = Image.open("RWx & Slogan.png")
     st.image(image, width=500)
     st.header("About")
     st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
