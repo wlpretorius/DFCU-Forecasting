@@ -18,10 +18,10 @@ from tensorflow.keras.layers import Dense,LSTM
 from numpy.random import seed
 
 
-seed(0)
-tf.random.set_seed(1)
-physical_devices = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+# seed(0)
+# tf.random.set_seed(1)
+# physical_devices = tf.config.experimental.list_physical_devices('GPU')
+# tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 # Pages and Tabs
 tabs = ["LIBOR","About"]
@@ -76,46 +76,46 @@ if page == "LIBOR":
         st.markdown(href, unsafe_allow_html=True)
 
     
-    st.subheader("Forecasting with RNN-LSTM")
-    if df is not None:
-        train_data = appdata
-        test_data= pd.DataFrame(0, columns=appdata.columns, index=pd.date_range(appdata.index.max()+timedelta(1), periods=3, freq='MS'))
-        scaler = MinMaxScaler()
-        scaler.fit(train_data)
-        scaled_train = scaler.transform(train_data)
-        scaled_test = scaler.transform(test_data)
-        n_input = 12
-        n_features = 1
-        generator = TimeseriesGenerator(scaled_train, scaled_train, length=n_input, batch_size=1)
-        model = Sequential()
-        model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
-        model.add(Dense(1))
-        model.compile(optimizer='adam', loss='mse')
-        model.fit_generator(generator,epochs=15)
-        first_eval_batch = scaled_train[-12:]
-        first_eval_batch = first_eval_batch.reshape((1, n_input, n_features))
-        model.predict(first_eval_batch)
-        test_predictions = []
-        first_eval_batch = scaled_train[-n_input:]
-        current_batch = first_eval_batch.reshape((1, n_input, n_features))
+    # st.subheader("Forecasting with RNN-LSTM")
+    # if df is not None:
+    #     train_data = appdata
+    #     test_data= pd.DataFrame(0, columns=appdata.columns, index=pd.date_range(appdata.index.max()+timedelta(1), periods=3, freq='MS'))
+    #     scaler = MinMaxScaler()
+    #     scaler.fit(train_data)
+    #     scaled_train = scaler.transform(train_data)
+    #     scaled_test = scaler.transform(test_data)
+    #     n_input = 12
+    #     n_features = 1
+    #     generator = TimeseriesGenerator(scaled_train, scaled_train, length=n_input, batch_size=1)
+    #     model = Sequential()
+    #     model.add(LSTM(200, activation='relu', input_shape=(n_input, n_features)))
+    #     model.add(Dense(1))
+    #     model.compile(optimizer='adam', loss='mse')
+    #     model.fit_generator(generator,epochs=15)
+    #     first_eval_batch = scaled_train[-12:]
+    #     first_eval_batch = first_eval_batch.reshape((1, n_input, n_features))
+    #     model.predict(first_eval_batch)
+    #     test_predictions = []
+    #     first_eval_batch = scaled_train[-n_input:]
+    #     current_batch = first_eval_batch.reshape((1, n_input, n_features))
 
-        for i in range(len(test_data)):
-            current_pred = model.predict(current_batch)[0]
-            test_predictions.append(current_pred) 
-            current_batch = np.append(current_batch[:,1:,:],[[current_pred]],axis=1)
+    #     for i in range(len(test_data)):
+    #         current_pred = model.predict(current_batch)[0]
+    #         test_predictions.append(current_pred) 
+    #         current_batch = np.append(current_batch[:,1:,:],[[current_pred]],axis=1)
 
-        true_predictions = scaler.inverse_transform(test_predictions)
-        test_data['6M_LIBOR'] = true_predictions
-        test_data.index = test_data.index.date
-        st.write(test_data)
+    #     true_predictions = scaler.inverse_transform(test_predictions)
+    #     test_data['6M_LIBOR'] = true_predictions
+    #     test_data.index = test_data.index.date
+    #     st.write(test_data)
         
-    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
-    if df is not None:
-        csv_exp_RNN = test_data.to_csv(index=True)
-        # When no file name is given, pandas returns the CSV as a string
-        b64 = base64.b64encode(csv_exp_RNN.encode()).decode()  # some strings <-> bytes conversions necessary here
-        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
-        st.markdown(href, unsafe_allow_html=True)
+    # st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    # if df is not None:
+    #     csv_exp_RNN = test_data.to_csv(index=True)
+    #     # When no file name is given, pandas returns the CSV as a string
+    #     b64 = base64.b64encode(csv_exp_RNN.encode()).decode()  # some strings <-> bytes conversions necessary here
+    #     href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;RNN_forecast_name&gt;.csv**)'
+    #     st.markdown(href, unsafe_allow_html=True)
 
 if page == "About":
     icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
@@ -128,8 +128,3 @@ if page == "About":
     st.markdown(""" **[Willem Pretorius](https://www.riskworx.com//)**""")
     st.write("Created on 30/03/2021")
     st.write("Last updated: **30/03/2021**")
-
-
-
-
-
