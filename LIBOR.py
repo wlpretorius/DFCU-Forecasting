@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import statsmodels
-import tensorflow as tf
+#import tensorflow as tf
 import datetime
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import streamlit as st
@@ -12,9 +12,9 @@ from streamlit import caching
 from PIL import Image
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime, timedelta
-from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense,LSTM
+#from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
+#from tensorflow.keras.models import Sequential
+#from tensorflow.keras.layers import Dense,LSTM
 from numpy.random import seed
 
 
