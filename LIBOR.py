@@ -60,7 +60,7 @@ if page == "LIBOR":
     st.title('DFCU Time Series Forecasting for LIBOR')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Historical Data Updated) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
     
     st.subheader("Preview: This tab allows scrolling")
@@ -149,7 +149,7 @@ if page == "FCY":
     st.title('DFCU Time Series Forecasting for 6-Month Fixed Deposits - FCY')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Other Rates) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
@@ -201,7 +201,7 @@ if page == "LCY":
     st.title('DFCU Time Series Forecasting for 6-Month Fixed Deposits - LCY')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Other Rates) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
@@ -247,7 +247,7 @@ if page == "Demand Deposits":
     st.title('DFCU Time Series Forecasting for Demand Deposits')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Other Rates) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
@@ -294,7 +294,7 @@ if page == "Savings Deposits":
     st.title('DFCU Time Series Forecasting for Savings Deposits')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Other Rates) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
@@ -341,7 +341,7 @@ if page == "Lending-Foreign":
     st.title('DFCU Time Series Forecasting for Lending-Foreign Rates')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Other Rates) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
@@ -387,7 +387,7 @@ if page == "Local Rates":
     st.title('Local Rates')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Historical Data Updated) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
@@ -437,7 +437,7 @@ if page == "Foreign Savings and Demand Deposits":
     st.title('DFCU Time Series Forecasting for Foreign Savings and Demand Deposits Rates')
     
     # Loading in the data
-    st.subheader("Please upload your CSV file here")
+    st.subheader("Please upload your (Other Rates) CSV file here")
     df = st.file_uploader('Upload here', type='csv')
         
     
