@@ -17,6 +17,10 @@ from datetime import datetime, timedelta
 # from tensorflow.keras.layers import Dense,LSTM
 from numpy.random import seed
 import seaborn as sns
+from statsmodels.tsa.vector_ar.var_model import VAR
+import math
+
+
 
 # seed(0)
 # tf.random.set_seed(1)
@@ -24,8 +28,30 @@ import seaborn as sns
 # tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 # Pages and Tabs
-tabs = ["LIBOR","FCY","LCY","Demand Deposits","Savings Deposits","Lending-Foreign","About"]
+tabs = ["About","LIBOR","FCY","LCY","Demand Deposits","Savings Deposits","Lending-Foreign","Local Rates","Foreign Savings and Demand Deposits"]
 page = st.sidebar.radio("Tabs",tabs)
+
+if page == "About":
+    icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
+    image = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
+    st.image(image, width=700)
+    st.header("About")
+    st.write("This web interface is designed for the Development Finance Company of Uganda Bank Limited (DFCU) \
+             to forecast their interest rate data as provided to Riskworx Pty (Ltd).\
+             Currently, two input csv files are needed for the models to provide accurate forecasts. These are \
+            (Historical Data Updated) and (Other Rates). The interface is currently in BETA and is being updated \
+            to have only one file imported to run all the models. At the moment, only selected models are implemented \
+                for these interest rates. That is; LIBOR, FCY, LCY, Demand Deposits, Savings Deposits, and Lending-Foreign Rates are modelled univariately through the \
+                    Holt-Winters Triple Exponential Smoothing method. Thereafter, Foreign Savings and Demand Deposits are modelled through \
+                        a Vector Autoregressive model and Interbank, Prime, 6-Month T-bill, with Central Bank rates (Local Rates - Tab on the left) are also modelled \
+                            through a Vector Autoregressive model.")
+    st.subheader("More about Streamlit")                        
+    st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
+    st.write("")
+    st.subheader("Author:")
+    st.markdown(""" **[Willem Pretorius](https://www.riskworx.com//)**""")
+    st.write("Created on 30/03/2021")
+    st.write("Last updated: **01/04/2021**")
 
 
 if page == "LIBOR":
@@ -265,7 +291,7 @@ if page == "Demand Deposits":
 if page == "Savings Deposits":
     
     # Title
-    st.title('DFCU Time Series Forecasting for Demand Deposits')
+    st.title('DFCU Time Series Forecasting for Savings Deposits')
     
     # Loading in the data
     st.subheader("Please upload your CSV file here")
@@ -355,29 +381,104 @@ if page == "Lending-Foreign":
         href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
         st.markdown(href, unsafe_allow_html=True)
 
+if page == "Local Rates":
+    
+    # Title
+    st.title('Local Rates')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         appdata = appdata.drop(columns=['6M_LIBOR'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index)
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Vector Autoregression")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = model = VAR(endog=appdata)
+        model_fit = model.fit(1)
+        yhat = model_fit.forecast(model_fit.y, periods_input)
+        true_predictions = pd.DataFrame(data=yhat, columns=appdata.columns)
+        true_predictions['Central_Bank_Rate_(CBR)']=true_predictions['Central_Bank_Rate_(CBR)'].apply(np.floor)
+        index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
+        true_predictions.index = index.date
+        st.dataframe(true_predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = true_predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
 
-
-
-
-
-
-
-
-
-
-
-if page == "About":
-    icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
-    image = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
-    st.image(image, width=500)
-    st.header("About")
-    st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
-    st.write("")
-    st.write("Author:")
-    st.markdown(""" **[Willem Pretorius](https://www.riskworx.com//)**""")
-    st.write("Created on 30/03/2021")
-    st.write("Last updated: **30/03/2021**")
-
+if page == "Foreign Savings and Demand Deposits":
+    
+    # Title
+    st.title('DFCU Time Series Forecasting for Foreign Savings and Demand Deposits Rates')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         appdata = appdata.drop(columns=['6M Fixed Deposit - FCY', '6M Fixed Deposit - LCY', 'Demand_Deposits', 'Savings_Deposits', 'Lending_Rates-Foreign'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index, format="%d/%m/%Y")
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Vector Autoregression")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = model = VAR(endog=appdata)
+        model_fit = model.fit(1)
+        yhat = model_fit.forecast(model_fit.y, periods_input)
+        true_predictions = pd.DataFrame(data=yhat, columns=appdata.columns)
+        index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
+        true_predictions.index = index.date
+        st.dataframe(true_predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = true_predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
 
 
 
