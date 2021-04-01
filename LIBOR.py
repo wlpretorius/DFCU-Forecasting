@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import statsmodels
-#import tensorflow as tf
+# import tensorflow as tf
 import datetime
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 import streamlit as st
@@ -12,11 +12,11 @@ from streamlit import caching
 from PIL import Image
 from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime, timedelta
-#from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
-#from tensorflow.keras.models import Sequential
-#from tensorflow.keras.layers import Dense,LSTM
+# from tensorflow.keras.preprocessing.sequence import TimeseriesGenerator
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense,LSTM
 from numpy.random import seed
-
+import seaborn as sns
 
 # seed(0)
 # tf.random.set_seed(1)
@@ -24,7 +24,7 @@ from numpy.random import seed
 # tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 # Pages and Tabs
-tabs = ["LIBOR","About"]
+tabs = ["LIBOR","FCY","LCY","Demand Deposits","Savings Deposits","Lending-Foreign","About"]
 page = st.sidebar.radio("Tabs",tabs)
 
 
@@ -117,9 +117,258 @@ if page == "LIBOR":
     #     href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;RNN_forecast_name&gt;.csv**)'
     #     st.markdown(href, unsafe_allow_html=True)
 
+if page == "FCY":
+    
+    # Title
+    st.title('DFCU Time Series Forecasting for 6-Month Fixed Deposits - FCY')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         st.subheader("An overview of the correlations associated with the Other Rates")
+         pearsoncorr = appdata.corr(method='pearson')
+         fig, ax = plt.subplots(figsize=(10,10))
+         sns.heatmap(pearsoncorr,xticklabels=pearsoncorr.columns,yticklabels=pearsoncorr.columns,cmap='RdBu_r',annot=True,linewidth=0.5)
+         st.pyplot(fig)
+         appdata = appdata.drop(columns=['6M Fixed Deposit - LCY', 'Demand_Deposits', 'Savings_Deposits','Lending_Rates-Foreign', 'Demand_Deposits-Foreign', 'Savings_Deposits-Foreign'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index,format="%d/%m/%Y")
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Holt-Winters")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = ExponentialSmoothing(appdata['6M Fixed Deposit - FCY'],trend='mul',seasonal='add',seasonal_periods=12).fit()
+        predictions = final_model.forecast(periods_input).rename('HW Forecast')
+        predictions.index = pd.to_datetime(predictions.index)
+        predictions.index = predictions.index.date
+        st.write(predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
+    
+if page == "LCY":
+    
+    # Title
+    st.title('DFCU Time Series Forecasting for 6-Month Fixed Deposits - LCY')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         appdata = appdata.drop(columns=['6M Fixed Deposit - FCY', 'Demand_Deposits', 'Savings_Deposits','Lending_Rates-Foreign', 'Demand_Deposits-Foreign', 'Savings_Deposits-Foreign'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index,format="%d/%m/%Y")
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Holt-Winters")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = ExponentialSmoothing(appdata['6M Fixed Deposit - LCY'],trend='add',seasonal='mul',seasonal_periods=12).fit()
+        predictions = final_model.forecast(periods_input)
+        predictions.index = predictions.index.date
+        st.write(predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
+    
+if page == "Demand Deposits":
+    
+    # Title
+    st.title('DFCU Time Series Forecasting for Demand Deposits')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         appdata = appdata.drop(columns=['6M Fixed Deposit - FCY', '6M Fixed Deposit - LCY', 'Savings_Deposits', 'Demand_Deposits-Foreign', 'Savings_Deposits-Foreign', 'Lending_Rates-Foreign'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index,format="%d/%m/%Y")
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Holt-Winters")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = ExponentialSmoothing(appdata['Demand_Deposits'],trend='add',seasonal='add',seasonal_periods=12).fit()
+        predictions = final_model.forecast(periods_input)
+        predictions.index = predictions.index.date
+        st.write(predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
+
+
+if page == "Savings Deposits":
+    
+    # Title
+    st.title('DFCU Time Series Forecasting for Demand Deposits')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         appdata = appdata.drop(columns=['6M Fixed Deposit - FCY', '6M Fixed Deposit - LCY', 'Demand_Deposits', 'Demand_Deposits-Foreign','Savings_Deposits-Foreign', 'Lending_Rates-Foreign'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index,format="%d/%m/%Y")
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Holt-Winters")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = ExponentialSmoothing(appdata['Savings_Deposits'],trend='mul',seasonal='mul',seasonal_periods=12).fit()
+        predictions = final_model.forecast(periods_input)
+        predictions.index = predictions.index.date
+        st.write(predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
+
+
+if page == "Lending-Foreign":
+    
+    # Title
+    st.title('DFCU Time Series Forecasting for Lending-Foreign Rates')
+    
+    # Loading in the data
+    st.subheader("Please upload your CSV file here")
+    df = st.file_uploader('Upload here', type='csv')
+        
+    
+    if df is not None:
+         appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
+         appdata = appdata.dropna()
+         appdata = appdata.drop(columns=['6M Fixed Deposit - FCY', '6M Fixed Deposit - LCY', 'Demand_Deposits','Savings_Deposits', 'Demand_Deposits-Foreign', 'Savings_Deposits-Foreign'])
+         st.subheader("Preview: This tab allows scrolling")
+         appdata.index = pd.to_datetime(appdata.index,format="%d/%m/%Y")
+         appdata.index = appdata.index.date
+         st.dataframe(appdata)
+         max_date = appdata.index.max()
+         st.subheader("Latest Data available is on this Date:")
+         st.write(max_date) 
+         
+    if df is not None:
+        st.subheader("Plotting the Data")
+        st.line_chart(appdata)    
+    
+    
+    st.subheader("Forecasting with Holt-Winters")
+    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    
+    if df is not None:
+        final_model = ExponentialSmoothing(appdata['Lending_Rates-Foreign'],trend='mul',seasonal='mul',seasonal_periods=12).fit()
+        predictions = final_model.forecast(periods_input)
+        predictions.index = predictions.index.date
+        st.write(predictions)
+    
+    
+    st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
+    if df is not None:
+        csv_exp = predictions.to_csv(index=True)
+        # When no file name is given, pandas returns the CSV as a string
+        b64 = base64.b64encode(csv_exp.encode()).decode()  # some strings <-> bytes conversions necessary here
+        href = f'<a href="data:file/csv;base64,{b64}">Download CSV File</a> (right-click and save as ** &lt;HW_forecast_name&gt;.csv**)'
+        st.markdown(href, unsafe_allow_html=True)
+
+
+
+
+
+
+
+
+
+
+
+
 if page == "About":
-    icon = Image.open("RWx & Slogan.png")
-    image = Image.open("RWx & Slogan.png")
+    icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
+    image = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
     st.image(image, width=500)
     st.header("About")
     st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
@@ -128,3 +377,8 @@ if page == "About":
     st.markdown(""" **[Willem Pretorius](https://www.riskworx.com//)**""")
     st.write("Created on 30/03/2021")
     st.write("Last updated: **30/03/2021**")
+
+
+
+
+
