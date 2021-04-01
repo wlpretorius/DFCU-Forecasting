@@ -32,8 +32,8 @@ tabs = ["About","LIBOR","FCY","LCY","Demand Deposits","Savings Deposits","Lendin
 page = st.sidebar.radio("Tabs",tabs)
 
 if page == "About":
-    icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
-    image = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
+    icon = Image.open("RWx & Slogan.png")
+    image = Image.open("RWx & Slogan.png")
     st.image(image, width=700)
     st.header("About")
     st.write("This web interface is designed for the Development Finance Company of Uganda Bank Limited (DFCU) \
