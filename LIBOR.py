@@ -1,6 +1,7 @@
 #import required packages
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import numpy as np
 import statsmodels
 import datetime
@@ -76,11 +77,21 @@ if page == "Data Preview and Analysis":
          sns.heatmap(pearsoncorr, xticklabels=pearsoncorr.columns, yticklabels=pearsoncorr.columns, cmap='RdBu_r', annot=True, linewidth=0.3, linecolor="black", square=True)
          st.pyplot(fig)
          # Plot Analysis
-         st.header("Plot Analysis")         
-         st.line_chart(appdata)         
+         st.header("Plot Analysis")   
+         st.write("Choose a Plotting Period:")
+         if st.checkbox("2011 - 2015"):
+             st.line_chart(appdata['2011-07':'2015-12'])
+         if st.checkbox("2016 - 2018"):
+             st.line_chart(appdata['2016-01':'2018-12'])
+         if st.checkbox("2019 - 2021"):
+             st.line_chart(appdata['2019-01':'2020-11'])        
+         if st.checkbox("2015 - 2021"):
+             st.line_chart(appdata['2015-01':'2020-11'])
+             
          st.write("Which rates would you like to plot?")
          columns = st.multiselect(options=appdata.columns, label="")
-         st.line_chart(appdata[columns])
+         st.line_chart(appdata['2015-01':'2020-11'][columns])
+
 
 if page == "LIBOR":
     # Title
@@ -105,9 +116,9 @@ if page == "LIBOR":
          st.write('Maximum value occured on this date:',max_element_libor[0])
          min_element_libor = appdata_libor.idxmin()
          st.write('Minimum value occured on this date:',min_element_libor[0])         
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_libor)        
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_libor)        
     
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
@@ -150,9 +161,9 @@ if page == "6M Fixed Deposit - FCY":
          st.write('Maximum value occured on this date:',max_element_fcy[0])
          min_element_fcy = appdata_fcy.idxmin()
          st.write('Minimum value occured on this date:',min_element_fcy[0])         
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_fcy)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_fcy)    
         
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
@@ -195,9 +206,9 @@ if page == "6M Fixed Deposit - LCY":
          min_element_lcy = appdata_lcy.idxmin()
          st.write('Minimum value occured on this date:',min_element_lcy[0])         
          
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_lcy)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_lcy)    
     
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
@@ -240,9 +251,9 @@ if page == "Demand Deposits":
          min_element_demanddeposits = appdata_demanddeposits.idxmin()
          st.write('Minimum value occured on this date:', min_element_demanddeposits[0])         
          
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_demanddeposits)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_demanddeposits)    
         
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
@@ -286,9 +297,9 @@ if page == "Savings Deposits":
          min_element_savingsdeposits = appdata_savingsdeposits.idxmin()
          st.write('Minimum value occured on this date:', min_element_savingsdeposits[0])
          
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_savingsdeposits)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_savingsdeposits)    
         
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
@@ -332,9 +343,9 @@ if page == "Lending - Foreign":
          min_element_lendingforeign = appdata_lendingforeign.idxmin()
          st.write('Minimum value occured on this date:', min_element_lendingforeign[0])
          
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_lendingforeign)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_lendingforeign)    
         
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
@@ -372,9 +383,9 @@ if page == "Local Rates":
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_localrates) 
          
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_localrates)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_localrates)    
     
     st.subheader("Forecasting with Vector Autoregression")
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
@@ -417,9 +428,9 @@ if page == "Foreign Deposits":
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_foreign) 
          
-    if df is not None:
-        st.subheader("Plotting the Data")
-        st.line_chart(appdata_foreign)    
+    # if df is not None:
+        # st.subheader("Plotting the Data")
+        # st.line_chart(appdata_foreign)    
         
     st.subheader("Forecasting with Vector Autoregression")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
