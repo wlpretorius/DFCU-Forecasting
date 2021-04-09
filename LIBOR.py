@@ -35,7 +35,7 @@ from pmdarima.arima.stationarity import ADFTest
 
 # Pages and Tabs
 st.set_page_config(layout='wide', initial_sidebar_state="expanded")
-sidebarimage = Image.open("Riskworx Wordmark Blue.png") 
+sidebarimage = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\Riskworx Wordmark Blue.png") 
 st.sidebar.image(sidebarimage, width=250)
 df = st.sidebar.file_uploader('Upload your CSV file here:', type='csv')
 st.sidebar.header('Navigation')
@@ -44,8 +44,8 @@ page = st.sidebar.radio("Riskworx Pty (Ltd)",tabs)
 
 
 if page == "About":
-    icon = Image.open("RWx & Slogan.png")
-    image = Image.open("RWx & Slogan.png")
+    icon = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
+    image = Image.open("C:\\Users\\Admin\\Desktop\\Riskworx\\RWx & Slogan.png")
     st.image(image, width=700)
     st.header("About")
     st.write("This interface is designed for the Development Finance Company of Uganda Bank Limited (DFCU) to forecast their interest rate data as provided to Riskworx Pty (Ltd).")
@@ -70,15 +70,15 @@ if page == "Data Preview and Analysis":
     if df is not None:
          appdata = pd.read_csv(df, index_col='Date', skip_blank_lines=True)
          appdata = appdata.dropna()
-         appdata.index = pd.to_datetime(appdata.index)
+         appdata.index = pd.to_datetime(appdata.index, format='%Y-%m-%d', errors='ignore')
          appdata.index = appdata.index.date
-         appdata_short = pd.DataFrame(appdata, columns = appdata.columns)
-         appdata_short.index = pd.to_datetime(appdata.index).strftime('%Y-%m')
-         st.dataframe(appdata_short)
-         min_date = appdata_short.index.min()
+         # appdata_short = pd.DataFrame(appdata, columns = appdata.columns)
+         # appdata_short.index = pd.to_datetime(appdata.index, format='%Y-%d-%m', errors='ignore').strftime('%Y-%m')
+         st.dataframe(appdata)
+         min_date = appdata.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date)
-         max_date = appdata_short.index.max()
+         max_date = appdata.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date)         
          st.subheader("Correlation Matrix - Hover over the plot below and click on the arrows in the right corner of the plot to view fullscreen.")
@@ -88,20 +88,22 @@ if page == "Data Preview and Analysis":
              sns.heatmap(pearsoncorr, xticklabels=pearsoncorr.columns, yticklabels=pearsoncorr.columns, cmap='RdBu_r', annot=True, linewidth=0.3, linecolor="black", square=True)
              st.pyplot(fig)        
          # Plot Analysis
-         st.header("Plot Analysis")   
-         st.write("Choose a Plotting Period:")
-         if st.checkbox("2011 - 2015"):
-             st.line_chart(appdata_short['2011-07':'2015-12'])
-         if st.checkbox("2016 - 2018"):
-             st.line_chart(appdata_short['2016-01':'2018-12'])
-         if st.checkbox("2019 - 2021"):
-             st.line_chart(appdata_short['2019-01':'2020-11'])        
-         if st.checkbox("2015 - 2021"):
-             st.line_chart(appdata_short['2015-01':'2020-11'])
+         st.header("Plot Analysis")
+         st.line_chart(appdata)
+         
+         #st.write("Choose a Plotting Period:")
+         #if st.checkbox("2011 - 2015"):
+             #st.line_chart(appdata)
+         #if st.checkbox("2016 - 2018"):
+             #st.line_chart(appdata['2016-01-01':'2018-12-01'])
+         #if st.checkbox("2019 - 2021"):
+             #st.line_chart(appdata['2019-01-01':'2020-12-01'])        
+         #if st.checkbox("2015 - 2021"):
+             #st.line_chart(appdata['2015-01-01':'2020-12-01'])
              
          st.write("Which rates would you like to plot?")
-         columns = st.multiselect(options=appdata_short.columns, label="")
-         st.line_chart(appdata_short['2015-01':'2020-11'][columns])
+         columns = st.multiselect(options=appdata.columns, label="")
+         st.line_chart(appdata[columns])
 
 
 if page == "6M - LIBOR":
@@ -118,21 +120,21 @@ if page == "6M - LIBOR":
          appdata_libor = appdata_libor.dropna()
          appdata_libor.index = pd.to_datetime(appdata_libor.index)
          appdata_libor.index = appdata_libor.index.date
-         appdata_libor_short = pd.DataFrame(data = appdata_libor, columns=appdata_libor.columns)
-         appdata_libor_short.index = pd.to_datetime(appdata_libor_short.index).strftime('%Y-%m')
-         st.dataframe(appdata_libor_short)
-         min_date_libor = appdata_libor_short.index.min()
+         # appdata_libor_short = pd.DataFrame(data = appdata_libor, columns=appdata_libor.columns)
+         # appdata_libor_short.index = pd.to_datetime(appdata_libor_short.index, format='%Y-%d-%m', errors='ignore').strftime('%Y-%m')
+         st.dataframe(appdata_libor)
+         min_date_libor = appdata_libor.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_libor) 
-         max_date_libor = appdata_libor_short.index.max()
+         max_date_libor = appdata_libor.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_libor)
-         description_libor = appdata_libor_short.describe()
+         description_libor = appdata_libor.describe()
          st.subheader("Data Analysis on: LIBOR")
          st.write(description_libor)
-         max_element_libor = appdata_libor_short.idxmax()
+         max_element_libor = appdata_libor.idxmax()
          st.write('Maximum value occured on this date:',max_element_libor[0])
-         min_element_libor = appdata_libor_short.idxmin()
+         min_element_libor = appdata_libor.idxmin()
          st.write('Minimum value occured on this date:',min_element_libor[0])         
     # if df is not None:
         # st.subheader("Plotting the Data")
@@ -143,8 +145,8 @@ if page == "6M - LIBOR":
     if df is not None:
         fitted_model_libor = ExponentialSmoothing(appdata_libor['6M_LIBOR'], trend='mul', seasonal='mul', seasonal_periods=12).fit()
         predictions_libor = fitted_model_libor.forecast(periods_input)        
-        predictions_libor.index = pd.to_datetime(predictions_libor.index).strftime('%Y-%m')
-        # predictions_libor.index = predictions_libor.index.date
+        predictions_libor.index = pd.to_datetime(predictions_libor.index)
+        predictions_libor.index = predictions_libor.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
         st.write(predictions_libor)    
     
@@ -167,7 +169,7 @@ if page == "6M - LIBOR":
     y_pred_libor_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_libor_arima_df.index = pd.to_datetime(y_pred_libor_arima_df.index)
     y_pred_libor_arima_df.index = y_pred_libor_arima_df.index.date
-    y_pred_libor_arima_df.index = pd.to_datetime(y_pred_libor_arima_df.index).strftime('%Y-%m')
+    # y_pred_libor_arima_df.index = pd.to_datetime(y_pred_libor_arima_df.index, format='%Y-%d-%m', errors='ignore').strftime('%Y-%m')
     st.write(y_pred_libor_arima_df)
     
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -199,21 +201,21 @@ if page == "6M Fixed Deposit - FCY":
          appdata_fcy = appdata.drop(columns=['Interbank_Rate', 'Prime Rate','Central_Bank_Rate_(CBR)', '6M Fixed Deposit - LCY', 'Demand_Deposits','Savings_Deposits', '6M_LIBOR', '6M T-Bill Rate','Demand_Deposits-Foreign', 'Savings_Deposits-Foreign','Lending_Rates-Foreign'])
          appdata_fcy.index = pd.to_datetime(appdata_fcy.index)
          appdata_fcy.index = appdata_fcy.index.date
-         appdata_fcy_short = pd.DataFrame(data = appdata_fcy, columns=appdata_fcy.columns)
-         appdata_fcy_short.index = pd.to_datetime(appdata_fcy_short.index).strftime('%Y-%m')
-         st.dataframe(appdata_fcy_short)
-         min_date_fcy = appdata_fcy_short.index.min()
+         # appdata_fcy_short = pd.DataFrame(data = appdata_fcy, columns=appdata_fcy.columns)
+         # appdata_fcy_short.index = pd.to_datetime(appdata_fcy_short.index).strftime('%Y-%m')
+         st.dataframe(appdata_fcy)
+         min_date_fcy = appdata_fcy.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_fcy)
-         max_date_fcy = appdata_fcy_short.index.max()
+         max_date_fcy = appdata_fcy.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_fcy) 
-         description_fcy = appdata_fcy_short.describe()
+         description_fcy = appdata_fcy.describe()
          st.subheader("Data Analysis on: 6M Fixed Deposit - FCY")
          st.write(description_fcy)
-         max_element_fcy = appdata_fcy_short.idxmax()
+         max_element_fcy = appdata_fcy.idxmax()
          st.write('Maximum value occured on this date:',max_element_fcy[0])
-         min_element_fcy = appdata_fcy_short.idxmin()
+         min_element_fcy = appdata_fcy.idxmin()
          st.write('Minimum value occured on this date:',min_element_fcy[0])         
     # if df is not None:
         # st.subheader("Plotting the Data")
@@ -224,8 +226,8 @@ if page == "6M Fixed Deposit - FCY":
     if df is not None:
         final_model_fcy = ExponentialSmoothing(appdata_fcy['6M Fixed Deposit - FCY'],trend='mul',seasonal='add',seasonal_periods=12).fit()
         predictions_fcy = final_model_fcy.forecast(periods_input)
-        predictions_fcy.index = pd.to_datetime(predictions_fcy.index).strftime('%Y-%m')
-        # predictions_fcy.index = predictions_fcy.index.date
+        predictions_fcy.index = pd.to_datetime(predictions_fcy.index)
+        predictions_fcy.index = predictions_fcy.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")   
         st.write(predictions_fcy)
     
@@ -248,7 +250,7 @@ if page == "6M Fixed Deposit - FCY":
     y_pred_fcy_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_fcy_arima_df.index = pd.to_datetime(y_pred_fcy_arima_df.index)
     y_pred_fcy_arima_df.index = y_pred_fcy_arima_df.index.date
-    y_pred_fcy_arima_df.index = pd.to_datetime(y_pred_fcy_arima_df.index).strftime('%Y-%m')
+    # y_pred_fcy_arima_df.index = pd.to_datetime(y_pred_fcy_arima_df.index).strftime('%Y-%m')
     st.write(y_pred_fcy_arima_df)
     
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -279,22 +281,22 @@ if page == "6M Fixed Deposit - LCY":
          appdata_lcy = appdata.drop(columns=['Interbank_Rate', 'Prime Rate', '6M Fixed Deposit - FCY','Central_Bank_Rate_(CBR)', 'Demand_Deposits','Savings_Deposits', '6M_LIBOR', '6M T-Bill Rate','Demand_Deposits-Foreign', 'Savings_Deposits-Foreign','Lending_Rates-Foreign'])
          appdata_lcy.index = pd.to_datetime(appdata_lcy.index)
          appdata_lcy.index = appdata_lcy.index.date
-         appdata_lcy_short = pd.DataFrame(data = appdata_lcy, columns=appdata_lcy.columns)
-         appdata_lcy_short.index = pd.to_datetime(appdata_lcy_short.index).strftime('%Y-%m')
+         # appdata_lcy_short = pd.DataFrame(data = appdata_lcy, columns=appdata_lcy.columns)
+         # appdata_lcy_short.index = pd.to_datetime(appdata_lcy_short.index).strftime('%Y-%m')
          # appdata_lcy.index = appdata_lcy.index.date
-         st.dataframe(appdata_lcy_short)
-         min_date_lcy = appdata_lcy_short.index.min()
+         st.dataframe(appdata_lcy)
+         min_date_lcy = appdata_lcy.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_lcy)
-         max_date_lcy = appdata_lcy_short.index.max()
+         max_date_lcy = appdata_lcy.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_lcy) 
-         description_lcy = appdata_lcy_short.describe()
+         description_lcy = appdata_lcy.describe()
          st.subheader("Data Analysis on: 6M Fixed Deposit - LCY")
          st.write(description_lcy)
-         max_element_lcy = appdata_lcy_short.idxmax()
+         max_element_lcy = appdata_lcy.idxmax()
          st.write('Maximum value occured on this date:',max_element_lcy[0])
-         min_element_lcy = appdata_lcy_short.idxmin()
+         min_element_lcy = appdata_lcy.idxmin()
          st.write('Minimum value occured on this date:',min_element_lcy[0])         
          
     # if df is not None:
@@ -306,8 +308,8 @@ if page == "6M Fixed Deposit - LCY":
     if df is not None:
         final_model_lcy = ExponentialSmoothing(appdata_lcy['6M Fixed Deposit - LCY'],trend='add',seasonal='mul',seasonal_periods=12).fit()
         predictions_lcy = final_model_lcy.forecast(periods_input)
-        predictions_lcy.index = pd.to_datetime(predictions_lcy.index).strftime('%Y-%m')
-        # predictions_lcy.index = predictions_lcy.index.date
+        predictions_lcy.index = pd.to_datetime(predictions_lcy.index)
+        predictions_lcy.index = predictions_lcy.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
         st.write(predictions_lcy)
     
@@ -330,7 +332,7 @@ if page == "6M Fixed Deposit - LCY":
     y_pred_lcy_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_lcy_arima_df.index = pd.to_datetime(y_pred_lcy_arima_df.index)
     y_pred_lcy_arima_df.index = y_pred_lcy_arima_df.index.date
-    y_pred_lcy_arima_df.index = pd.to_datetime(y_pred_lcy_arima_df.index).strftime('%Y-%m')
+    # y_pred_lcy_arima_df.index = pd.to_datetime(y_pred_lcy_arima_df.index).strftime('%Y-%m')
     st.write(y_pred_lcy_arima_df)   
     
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -361,22 +363,22 @@ if page == "Demand Deposits":
          appdata_demanddeposits = appdata.drop(columns=['Interbank_Rate', 'Prime Rate', '6M Fixed Deposit - FCY','Central_Bank_Rate_(CBR)', '6M Fixed Deposit - LCY','Savings_Deposits', '6M_LIBOR', '6M T-Bill Rate','Demand_Deposits-Foreign', 'Savings_Deposits-Foreign','Lending_Rates-Foreign'])
          appdata_demanddeposits.index = pd.to_datetime(appdata_demanddeposits.index)
          appdata_demanddeposits.index = appdata_demanddeposits.index.date         
-         appdata_demanddeposits_short = pd.DataFrame(data = appdata_demanddeposits, columns=appdata_demanddeposits.columns)         
-         appdata_demanddeposits_short.index = pd.to_datetime(appdata_demanddeposits_short.index).strftime('%Y-%m')
+         # appdata_demanddeposits_short = pd.DataFrame(data = appdata_demanddeposits, columns=appdata_demanddeposits.columns)         
+         # appdata_demanddeposits_short.index = pd.to_datetime(appdata_demanddeposits_short.index).strftime('%Y-%m')
          # appdata_demanddeposits.index = appdata_demanddeposits.index.date
-         st.dataframe(appdata_demanddeposits_short)
-         min_date_demanddeposits = appdata_demanddeposits_short.index.min()
+         st.dataframe(appdata_demanddeposits)
+         min_date_demanddeposits = appdata_demanddeposits.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_demanddeposits)
-         max_date_demanddeposits = appdata_demanddeposits_short.index.max()
+         max_date_demanddeposits = appdata_demanddeposits.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_demanddeposits)
-         description_demanddeposits = appdata_demanddeposits_short.describe()
+         description_demanddeposits = appdata_demanddeposits.describe()
          st.subheader("Data Analysis on: Demand Deposits")
          st.write(description_demanddeposits)
-         max_element_demanddeposits = appdata_demanddeposits_short.idxmax()
+         max_element_demanddeposits = appdata_demanddeposits.idxmax()
          st.write('Maximum value occured on this date:', max_element_demanddeposits[0])
-         min_element_demanddeposits = appdata_demanddeposits_short.idxmin()
+         min_element_demanddeposits = appdata_demanddeposits.idxmin()
          st.write('Minimum value occured on this date:', min_element_demanddeposits[0])         
          
     # if df is not None:
@@ -388,8 +390,8 @@ if page == "Demand Deposits":
     if df is not None:
         final_model_demanddeposits = ExponentialSmoothing(appdata_demanddeposits['Demand_Deposits'],trend='add',seasonal='add',seasonal_periods=12).fit()
         predictions_demanddeposits = final_model_demanddeposits.forecast(periods_input)
-        predictions_demanddeposits.index = pd.to_datetime(predictions_demanddeposits.index).strftime('%Y-%m')
-        # predictions_demanddeposits.index = predictions_demanddeposits.index.date
+        predictions_demanddeposits.index = pd.to_datetime(predictions_demanddeposits.index)
+        predictions_demanddeposits.index = predictions_demanddeposits.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
         st.write(predictions_demanddeposits)
     
@@ -413,7 +415,7 @@ if page == "Demand Deposits":
     y_pred_demanddeposits_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_demanddeposits_arima_df.index = pd.to_datetime(y_pred_demanddeposits_arima_df.index)
     y_pred_demanddeposits_arima_df.index = y_pred_demanddeposits_arima_df.index.date
-    y_pred_demanddeposits_arima_df.index = pd.to_datetime(y_pred_demanddeposits_arima_df.index).strftime('%Y-%m')
+    # y_pred_demanddeposits_arima_df.index = pd.to_datetime(y_pred_demanddeposits_arima_df.index).strftime('%Y-%m')
     st.write(y_pred_demanddeposits_arima_df)    
     
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -444,22 +446,22 @@ if page == "Savings Deposits":
          appdata_savingsdeposits = appdata.drop(columns=['Interbank_Rate', 'Prime Rate', '6M Fixed Deposit - FCY','Central_Bank_Rate_(CBR)', '6M Fixed Deposit - LCY', 'Demand_Deposits','6M_LIBOR', '6M T-Bill Rate','Demand_Deposits-Foreign', 'Savings_Deposits-Foreign','Lending_Rates-Foreign'])
          appdata_savingsdeposits.index = pd.to_datetime(appdata_savingsdeposits.index)
          appdata_savingsdeposits.index = appdata_savingsdeposits.index.date
-         appdata_savingsdeposits_short = pd.DataFrame(data = appdata_savingsdeposits, columns=appdata_savingsdeposits.columns)                  
-         appdata_savingsdeposits_short.index = pd.to_datetime(appdata_savingsdeposits_short.index).strftime('%Y-%m')
+         # appdata_savingsdeposits_short = pd.DataFrame(data = appdata_savingsdeposits, columns=appdata_savingsdeposits.columns)                  
+         # appdata_savingsdeposits_short.index = pd.to_datetime(appdata_savingsdeposits_short.index).strftime('%Y-%m')
          # appdata_savingsdeposits.index = appdata_savingsdeposits.index.date
-         st.dataframe(appdata_savingsdeposits_short)
-         min_date_savingsdeposits = appdata_savingsdeposits_short.index.min()
+         st.dataframe(appdata_savingsdeposits)
+         min_date_savingsdeposits = appdata_savingsdeposits.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_savingsdeposits)
-         max_date_savingsdeposits = appdata_savingsdeposits_short.index.max()
+         max_date_savingsdeposits = appdata_savingsdeposits.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_savingsdeposits) 
-         description_savingsdeposits = appdata_savingsdeposits_short.describe()
+         description_savingsdeposits = appdata_savingsdeposits.describe()
          st.subheader("Data Analysis on: Savings Deposits")
          st.write(description_savingsdeposits)
-         max_element_savingsdeposits = appdata_savingsdeposits_short.idxmax()
+         max_element_savingsdeposits = appdata_savingsdeposits.idxmax()
          st.write('Maximum value occured on this date:', max_element_savingsdeposits[0])
-         min_element_savingsdeposits = appdata_savingsdeposits_short.idxmin()
+         min_element_savingsdeposits = appdata_savingsdeposits.idxmin()
          st.write('Minimum value occured on this date:', min_element_savingsdeposits[0])
          
     # if df is not None:
@@ -471,8 +473,8 @@ if page == "Savings Deposits":
     if df is not None:
         final_model_savingsdeposits = ExponentialSmoothing(appdata_savingsdeposits['Savings_Deposits'],trend='mul',seasonal='mul',seasonal_periods=12).fit()
         predictions_savingsdeposits = final_model_savingsdeposits.forecast(periods_input)
-        predictions_savingsdeposits.index = pd.to_datetime(predictions_savingsdeposits.index).strftime('%Y-%m')
-        # predictions_savingsdeposits.index = predictions_savingsdeposits.index.date
+        predictions_savingsdeposits.index = pd.to_datetime(predictions_savingsdeposits.index)
+        predictions_savingsdeposits.index = predictions_savingsdeposits.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
         st.write(predictions_savingsdeposits)    
 
@@ -496,7 +498,7 @@ if page == "Savings Deposits":
     y_pred_savingsdeposits_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_savingsdeposits_arima_df.index = pd.to_datetime(y_pred_savingsdeposits_arima_df.index)
     y_pred_savingsdeposits_arima_df.index = y_pred_savingsdeposits_arima_df.index.date
-    y_pred_savingsdeposits_arima_df.index = pd.to_datetime(y_pred_savingsdeposits_arima_df.index).strftime('%Y-%m')
+    # y_pred_savingsdeposits_arima_df.index = pd.to_datetime(y_pred_savingsdeposits_arima_df.index).strftime('%Y-%m')
     st.write(y_pred_savingsdeposits_arima_df)    
     
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -527,22 +529,22 @@ if page == "Lending - Foreign":
          appdata_lendingforeign = appdata.drop(columns=['Interbank_Rate', 'Prime Rate', '6M Fixed Deposit - FCY','Central_Bank_Rate_(CBR)', '6M Fixed Deposit - LCY', 'Demand_Deposits','Savings_Deposits', '6M_LIBOR', '6M T-Bill Rate','Demand_Deposits-Foreign', 'Savings_Deposits-Foreign'])
          appdata_lendingforeign.index = pd.to_datetime(appdata_lendingforeign.index)
          appdata_lendingforeign.index = appdata_lendingforeign.index.date
-         appdata_lendingforeign_short = pd.DataFrame(data = appdata_lendingforeign, columns=appdata_lendingforeign.columns)                           
-         appdata_lendingforeign_short.index = pd.to_datetime(appdata_lendingforeign_short.index).strftime('%Y-%m')
+         # appdata_lendingforeign_short = pd.DataFrame(data = appdata_lendingforeign, columns=appdata_lendingforeign.columns)                           
+         # appdata_lendingforeign_short.index = pd.to_datetime(appdata_lendingforeign_short.index).strftime('%Y-%m')
          # appdata_lendingforeign.index = appdata_lendingforeign.index.date
-         st.dataframe(appdata_lendingforeign_short)
-         min_date_lendingforeign = appdata_lendingforeign_short.index.min()
+         st.dataframe(appdata_lendingforeign)
+         min_date_lendingforeign = appdata_lendingforeign.index.min()
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_lendingforeign)
-         max_date_lendingforeign = appdata_lendingforeign_short.index.max()
+         max_date_lendingforeign = appdata_lendingforeign.index.max()
          st.subheader("Latest Data available is on this Date:")
          st.write(max_date_lendingforeign) 
-         description_lendingforeign = appdata_lendingforeign_short.describe()
+         description_lendingforeign = appdata_lendingforeign.describe()
          st.subheader("Data Analysis on: Lending - Foreign")
          st.write(description_lendingforeign)
-         max_element_lendingforeign = appdata_lendingforeign_short.idxmax()
+         max_element_lendingforeign = appdata_lendingforeign.idxmax()
          st.write('Maximum value occured on this date:', max_element_lendingforeign[0])
-         min_element_lendingforeign = appdata_lendingforeign_short.idxmin()
+         min_element_lendingforeign = appdata_lendingforeign.idxmin()
          st.write('Minimum value occured on this date:', min_element_lendingforeign[0])
          
     # if df is not None:
@@ -555,8 +557,8 @@ if page == "Lending - Foreign":
     if df is not None:
         final_model_lendingforeign = ExponentialSmoothing(appdata_lendingforeign['Lending_Rates-Foreign'],trend='mul',seasonal='mul',seasonal_periods=12).fit()
         predictions_lendingforeign = final_model_lendingforeign.forecast(periods_input)
-        predictions_lendingforeign.index = pd.to_datetime(predictions_lendingforeign.index).strftime('%Y-%m')
-        # predictions_lendingforeign.index = predictions_lendingforeign.index.date
+        predictions_lendingforeign.index = pd.to_datetime(predictions_lendingforeign.index)
+        predictions_lendingforeign.index = predictions_lendingforeign.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
         st.write(predictions_lendingforeign)
 
@@ -580,7 +582,7 @@ if page == "Lending - Foreign":
     y_pred_lendingforeign_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_lendingforeign_arima_df.index = pd.to_datetime(y_pred_lendingforeign_arima_df.index)
     y_pred_lendingforeign_arima_df.index = y_pred_lendingforeign_arima_df.index.date
-    y_pred_lendingforeign_arima_df.index = pd.to_datetime(y_pred_lendingforeign_arima_df.index).strftime('%Y-%m')
+    # y_pred_lendingforeign_arima_df.index = pd.to_datetime(y_pred_lendingforeign_arima_df.index).strftime('%Y-%m')
     st.write(y_pred_lendingforeign_arima_df)    
         
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -634,7 +636,7 @@ if page == "Local Rates":
         true_predictions_localrates.index = pd.to_datetime(true_predictions_localrates.index)
         index_localrates = pd.date_range(appdata_localrates.index.max() + timedelta(1), periods = periods_input, freq='MS')
         true_predictions_localrates.index = index_localrates.date
-        true_predictions_localrates.index = pd.to_datetime(true_predictions_localrates.index).strftime('%Y-%m')
+        # true_predictions_localrates.index = pd.to_datetime(true_predictions_localrates.index).strftime('%Y-%m')
         st.subheader("Forecasted Values with Vector Autoregression")
         st.dataframe(true_predictions_localrates)
     
@@ -648,7 +650,7 @@ if page == "Local Rates":
         yhat_localrates_varma_df.index = pd.date_range(appdata_localrates.index.max() + timedelta(1), periods = periods_input, freq='MS')
         yhat_localrates_varma_df['Central_Bank_Rate_(CBR)'] = yhat_localrates_varma_df['Central_Bank_Rate_(CBR)'].apply(np.floor)
         yhat_localrates_varma_df.index = yhat_localrates_varma_df.index.date
-        yhat_localrates_varma_df.index = pd.to_datetime(yhat_localrates_varma_df.index).strftime('%Y-%m')
+        # yhat_localrates_varma_df.index = pd.to_datetime(yhat_localrates_varma_df.index).strftime('%Y-%m')
         st.dataframe(yhat_localrates_varma_df)
 
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
@@ -700,7 +702,7 @@ if page == "Foreign Deposits":
         true_predictions_foreign = pd.DataFrame(data=yhat_foreign, columns=appdata_foreign.columns)
         index_foreign = pd.date_range(appdata_foreign.index.max() + timedelta(1), periods = periods_input, freq='MS')
         true_predictions_foreign.index = index_foreign.date
-        true_predictions_foreign.index = pd.to_datetime(true_predictions_foreign.index).strftime('%Y-%m')
+        # true_predictions_foreign.index = pd.to_datetime(true_predictions_foreign.index).strftime('%Y-%m')
         st.subheader("Forecasted Values with Vector Autoregression")
         st.dataframe(true_predictions_foreign)
 
@@ -713,7 +715,7 @@ if page == "Foreign Deposits":
         yhat_foreign_varma_df = pd.DataFrame(yhat_foreign_varma, columns=appdata_foreign.columns)
         yhat_foreign_varma_df.index = pd.date_range(appdata_foreign.index.max() + timedelta(1), periods = periods_input, freq='MS')
         yhat_foreign_varma_df.index = yhat_foreign_varma_df.index.date
-        yhat_foreign_varma_df.index = pd.to_datetime(yhat_foreign_varma_df.index).strftime('%Y-%m')
+        # yhat_foreign_varma_df.index = pd.to_datetime(yhat_foreign_varma_df.index).strftime('%Y-%m')
         st.dataframe(yhat_foreign_varma_df)
         
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
