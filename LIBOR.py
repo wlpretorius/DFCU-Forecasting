@@ -224,8 +224,8 @@ if page == "6M Fixed Deposit - FCY":
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
     if df is not None:
-        final_model_fcy = ExponentialSmoothing(appdata_fcy,trend='mul',seasonal='add',seasonal_periods=12).fit()
-        predictions_fcy = final_model_fcy.forecast(periods_input)
+        final_model_fcy = ExponentialSmoothing(appdata_fcy,trend='mul',seasonal='mul',seasonal_periods=12).fit()
+        predictions_fcy = final_model_fcy.forecast(periods_input).round(5)
         predictions_fcy.index = pd.to_datetime(predictions_fcy.index)
         predictions_fcy.index = predictions_fcy.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")   
