@@ -165,7 +165,7 @@ if page == "6M - LIBOR":
     model_libor_arima = auto_arima(appdata_libor['6M_LIBOR'],d=nr_diff,trace=True,start_p=0,start_q=0,max_p=10, max_q=10,seasonal=False,stepwise=False,suppress_warnings=True,error_action='ignore',approximation = False)
     model_libor_arima.fit(appdata_libor['6M_LIBOR'])
     y_pred_libor_arima = model_libor_arima.predict(n_periods=periods_input)
-    y_pred_libor_arima_df = pd.DataFrame(data = y_pred_libor_arima, columns=appdata_libor.columns)
+    y_pred_libor_arima_df = pd.DataFrame(data = y_pred_libor_arima, columns=appdata_libor.columns).abs()
     y_pred_libor_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_libor_arima_df.index = pd.to_datetime(y_pred_libor_arima_df.index)
     y_pred_libor_arima_df.index = y_pred_libor_arima_df.index.date
@@ -224,7 +224,7 @@ if page == "6M Fixed Deposit - FCY":
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
     periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
     if df is not None:
-        final_model_fcy = ExponentialSmoothing(appdata_fcy['6M Fixed Deposit - FCY'],trend='mul',seasonal='add',seasonal_periods=12).fit()
+        final_model_fcy = ExponentialSmoothing(appdata_fcy,trend='mul',seasonal='add',seasonal_periods=12).fit()
         predictions_fcy = final_model_fcy.forecast(periods_input)
         predictions_fcy.index = pd.to_datetime(predictions_fcy.index)
         predictions_fcy.index = predictions_fcy.index.date
@@ -246,7 +246,7 @@ if page == "6M Fixed Deposit - FCY":
     model_fcy_arima = auto_arima(appdata_fcy,d=nr_diff,trace=True,start_p=0,start_q=0,max_p=10, max_q=10,seasonal=False,stepwise=False,suppress_warnings=True,error_action='ignore',approximation = False)
     model_fcy_arima.fit(appdata_fcy)
     y_pred_fcy_arima = model_fcy_arima.predict(n_periods=periods_input)
-    y_pred_fcy_arima_df = pd.DataFrame(data = y_pred_fcy_arima, columns=appdata_fcy.columns)
+    y_pred_fcy_arima_df = pd.DataFrame(data = y_pred_fcy_arima, columns=appdata_fcy.columns).abs()
     y_pred_fcy_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_fcy_arima_df.index = pd.to_datetime(y_pred_fcy_arima_df.index)
     y_pred_fcy_arima_df.index = y_pred_fcy_arima_df.index.date
@@ -328,7 +328,7 @@ if page == "6M Fixed Deposit - LCY":
     model_lcy_arima = auto_arima(appdata_lcy,d=nr_diff,trace=True,start_p=0,start_q=0,max_p=10, max_q=10,seasonal=False,stepwise=False,suppress_warnings=True,error_action='ignore',approximation = False)
     model_lcy_arima.fit(appdata_lcy)
     y_pred_lcy_arima = model_lcy_arima.predict(n_periods=periods_input)
-    y_pred_lcy_arima_df = pd.DataFrame(data = y_pred_lcy_arima, columns=appdata_lcy.columns)
+    y_pred_lcy_arima_df = pd.DataFrame(data = y_pred_lcy_arima, columns=appdata_lcy.columns).abs()
     y_pred_lcy_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_lcy_arima_df.index = pd.to_datetime(y_pred_lcy_arima_df.index)
     y_pred_lcy_arima_df.index = y_pred_lcy_arima_df.index.date
@@ -411,7 +411,7 @@ if page == "Demand Deposits":
     model_demanddeposits_arima.fit(appdata_demanddeposits)
 
     y_pred_demanddeposits_arima = model_demanddeposits_arima.predict(n_periods=periods_input)
-    y_pred_demanddeposits_arima_df = pd.DataFrame(data = y_pred_demanddeposits_arima, columns=appdata_demanddeposits.columns)
+    y_pred_demanddeposits_arima_df = pd.DataFrame(data = y_pred_demanddeposits_arima, columns=appdata_demanddeposits.columns).abs()
     y_pred_demanddeposits_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_demanddeposits_arima_df.index = pd.to_datetime(y_pred_demanddeposits_arima_df.index)
     y_pred_demanddeposits_arima_df.index = y_pred_demanddeposits_arima_df.index.date
@@ -494,7 +494,7 @@ if page == "Savings Deposits":
     model_savingsdeposits_arima.fit(appdata_savingsdeposits)
     
     y_pred_savingsdeposits_arima = model_savingsdeposits_arima.predict(n_periods=periods_input)
-    y_pred_savingsdeposits_arima_df = pd.DataFrame(data = y_pred_savingsdeposits_arima, columns=appdata_savingsdeposits.columns)
+    y_pred_savingsdeposits_arima_df = pd.DataFrame(data = y_pred_savingsdeposits_arima, columns=appdata_savingsdeposits.columns).abs()
     y_pred_savingsdeposits_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_savingsdeposits_arima_df.index = pd.to_datetime(y_pred_savingsdeposits_arima_df.index)
     y_pred_savingsdeposits_arima_df.index = y_pred_savingsdeposits_arima_df.index.date
@@ -578,7 +578,7 @@ if page == "Lending - Foreign":
     model_lendingforeign_arima.fit(appdata_lendingforeign)
     
     y_pred_lendingforeign_arima = model_lendingforeign_arima.predict(n_periods=periods_input)
-    y_pred_lendingforeign_arima_df = pd.DataFrame(data = y_pred_lendingforeign_arima, columns=appdata_lendingforeign.columns)
+    y_pred_lendingforeign_arima_df = pd.DataFrame(data = y_pred_lendingforeign_arima, columns=appdata_lendingforeign.columns).abs()
     y_pred_lendingforeign_arima_df.index = pd.date_range(appdata.index.max() + timedelta(1), periods = periods_input, freq='MS')
     y_pred_lendingforeign_arima_df.index = pd.to_datetime(y_pred_lendingforeign_arima_df.index)
     y_pred_lendingforeign_arima_df.index = y_pred_lendingforeign_arima_df.index.date
