@@ -52,7 +52,16 @@ if page == "About":
     st.header("Requirements")
     st.write("Currently, one input csv file is needed for the models to provide interest rate forecasts.")         
     st.header("How to use")  
-    st.write("Please insert your CSV file in the left tab then wait for the models to update. Note, all plots allow zooming.")   
+    st.write("Please read the instructions below first then insert your CSV file in the left tab. The models will update automatically. Note, all plots allow zooming.")
+    
+    if st.checkbox("Show Instructions"):
+        def show_pdf(file_path):
+            with open(file_path,"rb") as f:
+                  base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+            pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
+            st.markdown(pdf_display, unsafe_allow_html=True)
+        st.write(show_pdf("DFCU_Instructions_on_GUI.pdf"))
+    
     st.header("More about Streamlit")                        
     st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
     st.write("")
@@ -719,7 +728,7 @@ if page == "Foreign Deposits":
         st.dataframe(yhat_foreign_varma_df)
         
     st.subheader("The link below allows you to download the newly created forecast to your computer for further analysis and use.")
-    if df is not None:
+    if df is not None: 
         csv_exp_foreign = true_predictions_foreign.to_csv(index=True)
         # When no file name is given, pandas returns the CSV as a string
         b64 = base64.b64encode(csv_exp_foreign.encode()).decode()  # some strings <-> bytes conversions necessary here
@@ -737,6 +746,8 @@ if page == "About":
     with st.sidebar:
         if st.button(label='Clear cache'):
             caching.clear_cache()
+
+
 
     # st.subheader("Forecasting with RNN-LSTM")
     # if df is not None:
