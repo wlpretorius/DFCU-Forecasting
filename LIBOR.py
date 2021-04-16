@@ -1,5 +1,6 @@
 #import required packages
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
@@ -54,13 +55,21 @@ if page == "About":
     st.header("How to use")  
     st.write("Please read the instructions below first then insert your CSV file in the left tab. The models will update automatically. Note, all plots allow zooming.")
     
-    if st.checkbox("Show Instructions"):
-        def show_pdf(file_path):
-            with open(file_path,"rb") as f:
-                  base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-            pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
-            st.markdown(pdf_display, unsafe_allow_html=True)
-        show_pdf("DFCU_Instructions_on_GUI.pdf")
+    # if st.checkbox("Show Instructions"):
+    #     def show_pdf(file_path):
+    #         with open(file_path,"rb") as f:
+    #               base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    #         pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
+    #         st.markdown(pdf_display, unsafe_allow_html=True)
+    #     show_pdf("C:\\Users\\Admin\\Desktop\\Riskworx\\ALP\\DFCU_Instructions_on_GUI.pdf")
+    
+    def get_binary_file_downloader_html(bin_file, file_label='File'):
+        with open(bin_file, 'rb') as f:
+            data = f.read()
+        bin_str = base64.b64encode(data).decode()
+        href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{os.path.basename(bin_file)}">Download {file_label}</a>'
+        return href
+    st.markdown(get_binary_file_downloader_html('DFCU_Instructions_on_GUI.pdf', 'Instructions'), unsafe_allow_html=True)
     
     st.header("More about Streamlit")                        
     st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
