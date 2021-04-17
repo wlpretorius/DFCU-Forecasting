@@ -667,7 +667,7 @@ if page == "Local Rates":
     st.subheader("Forecasted Values with Vector Autoregression Moving Average")    
     if df is not None:
         model_localrates_varma = VARMAX(appdata_localrates, order=(1, 2))
-        model_localrates_varma_fit = model_localrates_varma.fit(disp=False, maxiter=150)
+        model_localrates_varma_fit = model_localrates_varma.fit(disp=False, maxiter=100)
         yhat_localrates_varma = model_localrates_varma_fit.forecast(steps=periods_input)
         yhat_localrates_varma_df = pd.DataFrame(yhat_localrates_varma, columns=appdata_localrates.columns)
         yhat_localrates_varma_df.index = pd.date_range(appdata_localrates.index.max() + timedelta(1), periods = periods_input, freq='MS')
@@ -733,7 +733,7 @@ if page == "Foreign Deposits":
     st.subheader("Forecasted Values with Vector Autoregression Moving Average")    
     if df is not None:
         model_foreign_varma = VARMAX(appdata_foreign, order=(1, 2))
-        model_foreign_varma_fit = model_foreign_varma.fit(disp=False, maxiter=250)                                                         
+        model_foreign_varma_fit = model_foreign_varma.fit(disp=False, maxiter=150)                                                         
         yhat_foreign_varma = model_foreign_varma_fit.forecast(steps=periods_input)
         yhat_foreign_varma_df = pd.DataFrame(yhat_foreign_varma, columns=appdata_foreign.columns)
         yhat_foreign_varma_df.index = pd.date_range(appdata_foreign.index.max() + timedelta(1), periods = periods_input, freq='MS')
