@@ -53,7 +53,7 @@ if page == "About":
     st.header("Requirements")
     st.write("Currently, one input csv file is needed for the models to provide interest rate forecasts.")         
     st.header("How to use")  
-    st.write("Please read the instructions below first then insert your CSV file in the left tab. The models will update automatically. Note, all plots allow zooming.")
+    st.write("Please read the instructions below then insert your CSV file in the left tab. The models will update automatically. Note, all plots allow zooming.")
     
     # if st.checkbox("Show Instructions"):
     #     def show_pdf(file_path):
@@ -71,14 +71,19 @@ if page == "About":
         return href
     st.markdown(get_binary_file_downloader_html('DFCU_Instructions_on_GUI.pdf', 'Instructions'), unsafe_allow_html=True)
     
-    st.header("More about Streamlit")                        
-    st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
     st.write("")
-    st.header("Author:")
+    st.header("Author and Creator")
     st.markdown(""" **[Willem Pretorius](https://www.riskworx.com//)**""")
     st.markdown(""" **[Contact](mailto:willem.pretorius@riskworx.com)** """)
     st.write("Created on 30/03/2021")
-    st.write("Last updated: **08/04/2021**")
+    st.write("Last updated: **16/04/2021**")
+    st.write("")
+    st.header("Product Owner")
+    st.markdown(""" **[Illse Nell](https://www.riskworx.com//)**""")
+    st.markdown(""" **[Contact](mailto:illse.nell@riskworx.com)** """)
+    st.write("")
+    st.header("More about Streamlit")                        
+    st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
 
 
 if page == "Data Preview and Analysis":
@@ -97,9 +102,9 @@ if page == "Data Preview and Analysis":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date)
          max_date = appdata.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date)         
-         st.subheader("Correlation Matrix - Hover over the plot below and click on the arrows in the right corner of the plot to view fullscreen.")
+         st.subheader("Correlation Matrix - Hover over the plot below and click on the arrows in the right corner of the plot to view fullscreen:")
          if st.checkbox("Show Correlation Matrix"):
              pearsoncorr = appdata.corr(method='pearson')
              fig, ax = plt.subplots(figsize=(12,10)) 
@@ -145,7 +150,7 @@ if page == "6M - LIBOR":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_libor) 
          max_date_libor = appdata_libor.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_libor)
          description_libor = appdata_libor.describe()
          st.subheader("Data Analysis on: LIBOR")
@@ -226,7 +231,7 @@ if page == "6M Fixed Deposit - FCY":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_fcy)
          max_date_fcy = appdata_fcy.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_fcy) 
          description_fcy = appdata_fcy.describe()
          st.subheader("Data Analysis on: 6M Fixed Deposit - FCY")
@@ -307,7 +312,7 @@ if page == "6M Fixed Deposit - LCY":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_lcy)
          max_date_lcy = appdata_lcy.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_lcy) 
          description_lcy = appdata_lcy.describe()
          st.subheader("Data Analysis on: 6M Fixed Deposit - LCY")
@@ -389,7 +394,7 @@ if page == "Demand Deposits":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_demanddeposits)
          max_date_demanddeposits = appdata_demanddeposits.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_demanddeposits)
          description_demanddeposits = appdata_demanddeposits.describe()
          st.subheader("Data Analysis on: Demand Deposits")
@@ -472,7 +477,7 @@ if page == "Savings Deposits":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_savingsdeposits)
          max_date_savingsdeposits = appdata_savingsdeposits.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_savingsdeposits) 
          description_savingsdeposits = appdata_savingsdeposits.describe()
          st.subheader("Data Analysis on: Savings Deposits")
@@ -555,7 +560,7 @@ if page == "Lending - Foreign":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_lendingforeign)
          max_date_lendingforeign = appdata_lendingforeign.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_lendingforeign) 
          description_lendingforeign = appdata_lendingforeign.describe()
          st.subheader("Data Analysis on: Lending - Foreign")
@@ -635,7 +640,7 @@ if page == "Local Rates":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_localrates)
          max_date_localrates = appdata_localrates.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_localrates) 
          
     # if df is not None:
@@ -703,7 +708,7 @@ if page == "Foreign Deposits":
          st.subheader("Starting Data Point is on this Date:")
          st.write(min_date_foreign)
          max_date_foreign = appdata_foreign.index.max()
-         st.subheader("Latest Data available is on this Date:")
+         st.subheader("Latest Data Available is on this Date:")
          st.write(max_date_foreign) 
          
     # if df is not None:
