@@ -164,10 +164,10 @@ if page == "6M - LIBOR":
         # st.line_chart(appdata_libor)        
     # Holt-Winters
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)    
     if df is not None:
         fitted_model_libor = ExponentialSmoothing(appdata_libor['6M_LIBOR'], trend='mul', seasonal='mul', seasonal_periods=12).fit()
-        predictions_libor = fitted_model_libor.forecast(periods_input)        
+        predictions_libor = fitted_model_libor.forecast(periods_input).abs()        
         predictions_libor.index = pd.to_datetime(predictions_libor.index)
         predictions_libor.index = predictions_libor.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
@@ -245,10 +245,10 @@ if page == "6M Fixed Deposit - FCY":
         # st.line_chart(appdata_fcy)    
     #Holt-Winters    
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)    
     if df is not None:
         final_model_fcy = ExponentialSmoothing(appdata_fcy,trend='mul',seasonal='mul',seasonal_periods=12).fit()
-        predictions_fcy = final_model_fcy.forecast(periods_input).round(5)
+        predictions_fcy = final_model_fcy.forecast(periods_input).round(5).abs()
         predictions_fcy.index = pd.to_datetime(predictions_fcy.index)
         predictions_fcy.index = predictions_fcy.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")   
@@ -327,10 +327,10 @@ if page == "6M Fixed Deposit - LCY":
         # st.line_chart(appdata_lcy)    
     #Holt-Winters
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)    
     if df is not None:
         final_model_lcy = ExponentialSmoothing(appdata_lcy['6M Fixed Deposit - LCY'],trend='add',seasonal='mul',seasonal_periods=12).fit()
-        predictions_lcy = final_model_lcy.forecast(periods_input)
+        predictions_lcy = final_model_lcy.forecast(periods_input).abs()
         predictions_lcy.index = pd.to_datetime(predictions_lcy.index)
         predictions_lcy.index = predictions_lcy.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
@@ -409,10 +409,10 @@ if page == "Demand Deposits":
         # st.line_chart(appdata_demanddeposits)    
     #Holt-Winters    
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)
     if df is not None:
         final_model_demanddeposits = ExponentialSmoothing(appdata_demanddeposits['Demand_Deposits'],trend='add',seasonal='add',seasonal_periods=12).fit()
-        predictions_demanddeposits = final_model_demanddeposits.forecast(periods_input)
+        predictions_demanddeposits = final_model_demanddeposits.forecast(periods_input).abs()
         predictions_demanddeposits.index = pd.to_datetime(predictions_demanddeposits.index)
         predictions_demanddeposits.index = predictions_demanddeposits.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
@@ -492,10 +492,10 @@ if page == "Savings Deposits":
         # st.line_chart(appdata_savingsdeposits)    
     #Holt-Winters    
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)    
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)    
     if df is not None:
         final_model_savingsdeposits = ExponentialSmoothing(appdata_savingsdeposits['Savings_Deposits'],trend='mul',seasonal='mul',seasonal_periods=12).fit()
-        predictions_savingsdeposits = final_model_savingsdeposits.forecast(periods_input)
+        predictions_savingsdeposits = final_model_savingsdeposits.forecast(periods_input).abs()
         predictions_savingsdeposits.index = pd.to_datetime(predictions_savingsdeposits.index)
         predictions_savingsdeposits.index = predictions_savingsdeposits.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
@@ -575,11 +575,11 @@ if page == "Lending - Foreign":
         # st.line_chart(appdata_lendingforeign)    
         
     st.subheader("Forecasting with Holt-Winters Triple Exponential Smoothing")    
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)
     #Holt-Winters
     if df is not None:
         final_model_lendingforeign = ExponentialSmoothing(appdata_lendingforeign['Lending_Rates-Foreign'],trend='mul',seasonal='mul',seasonal_periods=12).fit()
-        predictions_lendingforeign = final_model_lendingforeign.forecast(periods_input)
+        predictions_lendingforeign = final_model_lendingforeign.forecast(periods_input).abs()
         predictions_lendingforeign.index = pd.to_datetime(predictions_lendingforeign.index)
         predictions_lendingforeign.index = predictions_lendingforeign.index.date
         st.subheader("Forecasted Values with Holt-Winters Triple Exponential Smoothing")
@@ -648,13 +648,13 @@ if page == "Local Rates":
         # st.line_chart(appdata_localrates)    
     
     st.subheader("Forecasting with Vector Autoregression")
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)
     # Vector Autoregression
     if df is not None:
         final_model_localrates = VAR(endog=appdata_localrates)
         model_fit_localrates = final_model_localrates.fit(1)
         yhat_localrates = model_fit_localrates.forecast(final_model_localrates.y, periods_input)
-        true_predictions_localrates = pd.DataFrame(data=yhat_localrates, columns=appdata_localrates.columns)
+        true_predictions_localrates = pd.DataFrame(data=yhat_localrates, columns=appdata_localrates.columns).abs()
         true_predictions_localrates['Central_Bank_Rate_(CBR)']=true_predictions_localrates['Central_Bank_Rate_(CBR)'].apply(np.floor)
         true_predictions_localrates.index = pd.to_datetime(true_predictions_localrates.index)
         index_localrates = pd.date_range(appdata_localrates.index.max() + timedelta(1), periods = periods_input, freq='MS')
@@ -667,9 +667,9 @@ if page == "Local Rates":
     st.subheader("Forecasted Values with Vector Autoregression Moving Average")    
     if df is not None:
         model_localrates_varma = VARMAX(appdata_localrates, order=(1, 2))
-        model_localrates_varma_fit = model_localrates_varma.fit(disp=False)
+        model_localrates_varma_fit = model_localrates_varma.fit(disp=False, maxiter=100)
         yhat_localrates_varma = model_localrates_varma_fit.forecast(steps=periods_input)
-        yhat_localrates_varma_df = pd.DataFrame(yhat_localrates_varma, columns=appdata_localrates.columns)
+        yhat_localrates_varma_df = pd.DataFrame(yhat_localrates_varma, columns=appdata_localrates.columns).abs()
         yhat_localrates_varma_df.index = pd.date_range(appdata_localrates.index.max() + timedelta(1), periods = periods_input, freq='MS')
         yhat_localrates_varma_df['Central_Bank_Rate_(CBR)'] = yhat_localrates_varma_df['Central_Bank_Rate_(CBR)'].apply(np.floor)
         yhat_localrates_varma_df.index = yhat_localrates_varma_df.index.date
@@ -716,13 +716,13 @@ if page == "Foreign Deposits":
         # st.line_chart(appdata_foreign)    
         
     st.subheader("Forecasting with Vector Autoregression")    
-    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 3)
+    periods_input = st.number_input('How many months would you like to forecast into the future?', min_value = 1, max_value = 6)
     # Vector Autoregression
     if df is not None:
         final_model_foreign = VAR(endog=appdata_foreign)
         model_fit_foreign = final_model_foreign.fit(1)
         yhat_foreign = model_fit_foreign.forecast(model_fit_foreign.y, periods_input)
-        true_predictions_foreign = pd.DataFrame(data=yhat_foreign, columns=appdata_foreign.columns)
+        true_predictions_foreign = pd.DataFrame(data=yhat_foreign, columns=appdata_foreign.columns).abs()
         index_foreign = pd.date_range(appdata_foreign.index.max() + timedelta(1), periods = periods_input, freq='MS')
         true_predictions_foreign.index = index_foreign.date
         # true_predictions_foreign.index = pd.to_datetime(true_predictions_foreign.index).strftime('%Y-%m')
@@ -733,9 +733,9 @@ if page == "Foreign Deposits":
     st.subheader("Forecasted Values with Vector Autoregression Moving Average")    
     if df is not None:
         model_foreign_varma = VARMAX(appdata_foreign, order=(1, 2))
-        model_foreign_varma_fit = model_foreign_varma.fit(disp=False)                                                         
+        model_foreign_varma_fit = model_foreign_varma.fit(disp=False, maxiter=150)                                                         
         yhat_foreign_varma = model_foreign_varma_fit.forecast(steps=periods_input)
-        yhat_foreign_varma_df = pd.DataFrame(yhat_foreign_varma, columns=appdata_foreign.columns)
+        yhat_foreign_varma_df = pd.DataFrame(yhat_foreign_varma, columns=appdata_foreign.columns).abs()
         yhat_foreign_varma_df.index = pd.date_range(appdata_foreign.index.max() + timedelta(1), periods = periods_input, freq='MS')
         yhat_foreign_varma_df.index = yhat_foreign_varma_df.index.date
         # yhat_foreign_varma_df.index = pd.to_datetime(yhat_foreign_varma_df.index).strftime('%Y-%m')
